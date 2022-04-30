@@ -1,0 +1,148 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "administratorLogin": {
+      "defaultValue": "defectdojo",  
+      "type": "string"
+    },
+    "administratorLoginPassword": {
+      "defaultValue": "8g2*%a#ucG_j7AYN",  
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "ukwest",  
+      "type": "string"
+    },
+    "serverName": {
+      "defaultValue": "new-django-server-mysql",  
+      "type": "string"
+    },
+    "skuCapacity": {
+      "defaultValue": 2,    
+      "type": "int"
+    },
+    "skuFamily": {
+      "defaultValue": "Gen5",  
+      "type": "string"
+    },
+    "skuName": {
+      "defaultValue": "B_Gen5_2",
+      "type": "string"
+    },
+    "skuSizeMB": {
+      "defaultValue": 15360,  
+      "type": "int"
+    },
+    "skuTier": {
+      "defaultValue": "Basic",  
+      "type": "string"
+    },
+    "version": {
+      "defaultValue": "5.7", 
+      "type": "string"
+    },
+    "backupRetentionDays": {
+      "defaultValue": 7, 
+      "type": "int"
+    },
+    "geoRedundantBackup": {
+      "defaultValue": "Disabled",   
+      "type": "string"
+    },
+    "previewFeature": {
+      "type": "string",
+      "defaultValue": "LargeStorage"
+    },  
+    "storageAutoGrow": {
+      "type": "string",
+      "defaultValue": "Enabled"
+    },
+    "serverParameters": {
+      "defaultValue": {
+        "properties": [
+            {
+                "name": "log_bin_trust_function_creators",
+                "value": "ON"
+            },
+            {
+                "name": "slow_query_log",
+                "value": "ON"
+            },
+            {
+                "name": "long_query_time",
+                "value": "5"
+            }
+        ]
+    },  
+      "type": "object"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-12-01-preview",
+      "kind": "",
+      "location": "[parameters('location')]",
+      "name": "[parameters('serverName')]",
+      "properties": {
+        "version": "[parameters('version')]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "storageProfile": {
+          "storageMB": "[parameters('skuSizeMB')]",
+          "backupRetentionDays": "[parameters('backupRetentionDays')]",
+          "geoRedundantBackup": "[parameters('geoRedundantBackup')]",
+          "storageAutoGrow": "[parameters('storageAutoGrow')]"
+        },
+        "previewFeature": "[parameters('previewFeature')]"
+      },
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]",
+        "capacity": "[parameters('skuCapacity')]",
+        "size": "[parameters('skuSizeMB')]",
+        "family": "[parameters('skuFamily')]"
+      },
+      "type": "Microsoft.DBforMySQL/servers",
+      "resources": [
+        {
+          "type": "configurations",
+          "apiVersion": "2017-12-01-preview",
+          "name": "[parameters('serverParameters').properties[0].name]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]"
+          ],
+          "properties": {
+              "source": "user-override",           
+              "value": "[parameters('serverParameters').properties[0].value]"            
+          }
+        },
+        {
+          "type": "configurations",
+          "apiVersion": "2017-12-01-preview",
+          "name": "[parameters('serverParameters').properties[1].name]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]"
+          ],
+          "properties": {
+              "source": "user-override",           
+              "value": "[parameters('serverParameters').properties[1].value]"            
+          } 
+        },
+        {
+          "type": "configurations",
+          "apiVersion": "2017-12-01-preview",
+          "name": "[parameters('serverParameters').properties[2].name]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]"
+          ],
+          "properties": {
+            "source": "user-override",           
+            "value": "[parameters('serverParameters').properties[2].value]"            
+          }
+        }        
+       ]
+    }
+  ],
+  "variables": {}
+}

@@ -1,0 +1,30 @@
+    {
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "value": "django-rg"
+        },
+        "dnsPrefix": {
+            "value": "django-app"
+        },
+        "builtInRoleType":{
+            "value": "Contributor"
+        },
+        "existingServicePrincipalObjectId": {
+            "value": "ddd99925-242b-4c02-b5b4-41102e9763ab"
+        },
+        "existingServicePrincipalClientId": {
+            "value": "03224580-4e35-4e7e-a9f7-312abcff2c96"
+        },
+        "existingVirtualNetworkName": {
+            "value": "vnet"
+        },
+        "existingVirtualNetworkResourceGroup": {
+            "value": "django-rg"
+        },
+        "existingSubnetName": {
+            "value": "Subnet"
+        }
+    }
+}
